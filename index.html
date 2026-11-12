@@ -94,12 +94,42 @@
       pointer-events: none;
     }
 
-    /* TELA DO TIMER (Derretimento) */
-    .timer-slide {
-      background-color: #111;
+    /* BOTÕES DE NAVEGAÇÃO DO CARROSSEL (SETAS) */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      transition: opacity 0.2s, transform 0.1s;
+      color: #fff;
+    }
+    .nav-btn:active { transform: translateY(-50%) scale(0.9); background: rgba(0,0,0,0.8); }
+    .nav-btn svg { width: 24px; height: 24px; pointer-events: none; }
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
+
+    /* TELA DO TIMER (NOVO POST) */
+    .timer-content {
+      display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      width: 100%;
+      height: 100%;
       padding: 20px;
+      background-color: #111;
+      z-index: 1;
     }
     .timer-title {
       font-size: 26px;
@@ -124,7 +154,8 @@
     .sidebar,
     .info,
     .carousel-dots,
-    .carousel-badge {
+    .carousel-badge,
+    .nav-btn {
       transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
@@ -132,7 +163,8 @@
     .post.clean-view .sidebar,
     .post.clean-view .info,
     .post.clean-view .carousel-dots,
-    .post.clean-view .carousel-badge {
+    .post.clean-view .carousel-badge,
+    .post.clean-view .nav-btn {
       opacity: 0 !important;
       pointer-events: none !important;
     }
@@ -462,37 +494,17 @@
       </div>
     </div>
 
-    <!-- POST 2: CARROSSEL DERRETIMENTO MENTAL (GIF e Timer) -->
-    <div class="post carousel-post" data-post-id="post_derretimento" id="post_derretimento">
-      <div class="carousel-badge">1/2</div>
+    <!-- POST 2: GIF DERRETIMENTO MENTAL (Sem o Timer) -->
+    <div class="post standard-post" data-post-id="post_derretimento" id="post_derretimento">
+      <img class="post-img adaptive-bg" src="gifgif.gif" alt="Gif Derretimento Mental" />
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      
-      <div class="carousel-track" id="derretimento_track">
-        <!-- Slide 1: GIF Infinito -->
-        <div class="carousel-slide">
-          <img class="adaptive-bg" src="gifgif.gif" alt="Gif Derretimento Mental" />
-        </div>
-        <!-- Slide 2: Cronômetro -->
-        <div class="carousel-slide timer-slide">
-          <h2 class="timer-title">Derretimento Mental</h2>
-          <p class="timer-desc">Você perdeu a noção do tempo por:</p>
-          <div class="timer-display"><span id="meltdown_timer">0.0</span>s</div>
-          <p class="timer-desc">O tempo voa quando a gente não pensa.<br>Cuidado com o ciclo infinito!</p>
-        </div>
-      </div>
-
-      <div class="carousel-dots">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-      </div>
-
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
           <div class="avatar-1f">1°F</div>
           <span class="username">Projeto 1 °F</span>
         </div>
-        <div class="caption">O quão rápido sua mente derrete? Assista o gif e arraste para descobrir o tempo perdido! ⏰🤯</div>
+        <div class="caption">O quão rápido sua mente derrete? Assista o gif e arraste para baixo para descobrir! ⏰🤯</div>
       </div>
       <div class="sidebar">
         <div class="btn-wrapper">
@@ -510,8 +522,41 @@
       </div>
     </div>
 
-    <!-- POST 3: CARROSSEL SAÚDE (saude1, saude2, saude3) -->
-    <div class="post carousel-post" data-post-id="post_3">
+    <!-- POST 3: O RESULTADO DO TIMER -->
+    <div class="post standard-post" data-post-id="post_timer">
+      <div class="timer-content">
+        <h2 class="timer-title">Derretimento Mental</h2>
+        <p class="timer-desc">Você perdeu a noção do tempo por:</p>
+        <div class="timer-display"><span id="meltdown_timer">0.0</span>s</div>
+        <p class="timer-desc">O tempo voa quando a gente não pensa.<br>Cuidado com o ciclo infinito!</p>
+      </div>
+      <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <div class="gradient-bottom"></div>
+      <div class="info">
+        <div class="profile">
+          <div class="avatar-1f">1°F</div>
+          <span class="username">Projeto 1 °F</span>
+        </div>
+        <div class="caption">E aí, qual foi o seu tempo no post anterior? Comenta aqui embaixo! 👇</div>
+      </div>
+      <div class="sidebar">
+        <div class="btn-wrapper">
+          <button type="button" class="btn-action like-btn" aria-label="Curtir">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <span class="count like-count">0</span>
+        </div>
+        <div class="btn-wrapper">
+          <button type="button" class="btn-action comment-btn" aria-label="Comentar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          </button>
+          <span class="count comment-count">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 4: CARROSSEL SAÚDE (saude1, saude2, saude3) COM SETAS -->
+    <div class="post carousel-post" data-post-id="post_4">
       <div class="carousel-badge">1/3</div>
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       
@@ -527,6 +572,14 @@
         </div>
       </div>
 
+      <!-- Setas do carrossel -->
+      <div class="nav-btn prev-btn" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="nav-btn next-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
       <div class="carousel-dots">
         <span class="dot active"></span>
         <span class="dot"></span>
@@ -539,7 +592,7 @@
           <div class="avatar-1f">1°F</div>
           <span class="username">Projeto 1 °F</span>
         </div>
-        <div class="caption">Arraste para o lado para ver todas as dicas! 👉</div>
+        <div class="caption">Use as setinhas ou arraste para ver todas as dicas! 👉</div>
       </div>
       <div class="sidebar">
         <div class="btn-wrapper">
@@ -557,7 +610,7 @@
       </div>
     </div>
 
-    <!-- POST 4: CICLO (ciclo.png) -->
+    <!-- POST 5: CICLO (ciclo.png) -->
     <div class="post standard-post" data-post-id="post_ciclo">
       <img class="post-img adaptive-bg" src="ciclo.png" alt="Ciclo" />
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -585,7 +638,7 @@
       </div>
     </div>
 
-    <!-- POST 5: CARROSSEL MUNDO (mundo1.jfif e mundo2.jfif) -->
+    <!-- POST 6: CARROSSEL MUNDO (mundo1.jfif e mundo2.jfif) COM SETAS -->
     <div class="post carousel-post" data-post-id="post_mundo">
       <div class="carousel-badge">1/2</div>
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -597,6 +650,14 @@
         <div class="carousel-slide">
           <img class="adaptive-bg" src="mundo2.jfif" alt="Mundo 2" />
         </div>
+      </div>
+
+      <!-- Setas do carrossel -->
+      <div class="nav-btn prev-btn" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="nav-btn next-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </div>
 
       <div class="carousel-dots">
@@ -628,7 +689,7 @@
       </div>
     </div>
 
-    <!-- POST 6: FINAL (final.jfif) -->
+    <!-- POST 7: FINAL (final.jfif) -->
     <div class="post standard-post" data-post-id="post_final">
       <img class="post-img adaptive-bg" src="final.jfif" alt="Fim" />
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -730,7 +791,7 @@
         }
 
         const container = img.closest('.carousel-slide') || img.closest('.post');
-        if (container && !container.classList.contains('timer-slide')) {
+        if (container && !container.classList.contains('timer-post')) {
           container.style.backgroundColor = dominantHex;
         }
       } catch (e) {}
@@ -741,17 +802,51 @@
       else img.addEventListener('load', () => applyDominantColor(img));
     });
 
-    // LÓGICA INDEPENDENTE PARA TODOS OS CARROSSÉIS
+    // LÓGICA INDEPENDENTE PARA TODOS OS CARROSSÉIS E BOTÕES DE SETA
     document.querySelectorAll('.carousel-post').forEach(postEl => {
       const track = postEl.querySelector('.carousel-track');
       const dots = postEl.querySelectorAll('.carousel-dots .dot');
       const badge = postEl.querySelector('.carousel-badge');
+      const prevBtn = postEl.querySelector('.prev-btn');
+      const nextBtn = postEl.querySelector('.next-btn');
       const totalSlides = dots.length;
 
       if (!track) return;
 
       let currentIdx = 0;
       let startX = 0;
+
+      function updateUI() {
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle('active', idx === currentIdx);
+        });
+        if (badge) {
+          badge.textContent = `${currentIdx + 1}/${totalSlides}`;
+        }
+        if (prevBtn) prevBtn.style.display = currentIdx === 0 ? 'none' : 'flex';
+        if (nextBtn) nextBtn.style.display = currentIdx === totalSlides - 1 ? 'none' : 'flex';
+      }
+
+      // Eventos das setinhas
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (currentIdx > 0) {
+            currentIdx--;
+            track.scrollTo({ left: currentIdx * track.clientWidth, behavior: 'smooth' });
+          }
+        });
+      }
+      
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (currentIdx < totalSlides - 1) {
+            currentIdx++;
+            track.scrollTo({ left: currentIdx * track.clientWidth, behavior: 'smooth' });
+          }
+        });
+      }
 
       track.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
@@ -785,20 +880,16 @@
       track.addEventListener('scroll', () => {
         const slideWidth = track.clientWidth;
         if (slideWidth === 0) return;
-        const activeIndex = Math.round(track.scrollLeft / slideWidth);
-        currentIdx = activeIndex;
-
-        dots.forEach((dot, idx) => {
-          dot.classList.toggle('active', idx === activeIndex);
-        });
-        if (badge) {
-          badge.textContent = `${activeIndex + 1}/${totalSlides}`;
-        }
+        currentIdx = Math.round(track.scrollLeft / slideWidth);
+        updateUI();
       });
+
+      updateUI(); // Chama no início para esconder seta da esquerda
     });
 
     // ============================================
     // LÓGICA DO CRONÔMETRO DERRETIMENTO MENTAL
+    // (Agora o tempo corre se o post do GIF estiver na tela)
     // ============================================
     let isWatchingGif = false;
     let watchStartTime = 0;
@@ -806,51 +897,34 @@
     let timerInterval = null;
 
     const derretimentoPost = document.getElementById('post_derretimento');
-    const derretimentoTrack = document.getElementById('derretimento_track');
     const timerDisplay = document.getElementById('meltdown_timer');
 
-    let isPostInView = false;
-
-    // Detecta quando o usuário está olhando o post de derretimento
-    if (derretimentoPost && derretimentoTrack && timerDisplay) {
+    if (derretimentoPost && timerDisplay) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          isPostInView = entry.isIntersecting;
-          checkWatchingState();
+          if (entry.isIntersecting) {
+            // Entrou no post do GIF: Inicia/Retoma o tempo
+            if (!isWatchingGif) {
+              isWatchingGif = true;
+              watchStartTime = Date.now();
+              timerInterval = setInterval(() => {
+                const currentSession = (Date.now() - watchStartTime) / 1000;
+                timerDisplay.innerText = (totalWatchedTime + currentSession).toFixed(1);
+              }, 100);
+            }
+          } else {
+            // Saiu do post do GIF (ex: rolou para o timer): Pausa o tempo
+            if (isWatchingGif) {
+              isWatchingGif = false;
+              totalWatchedTime += (Date.now() - watchStartTime) / 1000;
+              clearInterval(timerInterval);
+              timerDisplay.innerText = totalWatchedTime.toFixed(1);
+            }
+          }
         });
-      }, { threshold: 0.6 });
+      }, { threshold: 0.6 }); // Quando 60% do GIF estiver visível
       
       observer.observe(derretimentoPost);
-
-      derretimentoTrack.addEventListener('scroll', () => {
-        checkWatchingState();
-      });
-    }
-
-    function checkWatchingState() {
-      if(!derretimentoTrack) return;
-      const slideWidth = derretimentoTrack.clientWidth;
-      const currentIdx = slideWidth > 0 ? Math.round(derretimentoTrack.scrollLeft / slideWidth) : 0;
-
-      // Se está no post e no primeiro slide (o do gif)
-      if (isPostInView && currentIdx === 0) {
-        if (!isWatchingGif) {
-          isWatchingGif = true;
-          watchStartTime = Date.now();
-          timerInterval = setInterval(() => {
-            const currentSession = (Date.now() - watchStartTime) / 1000;
-            timerDisplay.innerText = (totalWatchedTime + currentSession).toFixed(1);
-          }, 100);
-        }
-      } else {
-        // Se saiu do gif ou do post
-        if (isWatchingGif) {
-          isWatchingGif = false;
-          totalWatchedTime += (Date.now() - watchStartTime) / 1000;
-          clearInterval(timerInterval);
-          timerDisplay.innerText = totalWatchedTime.toFixed(1);
-        }
-      }
     }
     // ============================================
 
@@ -1011,7 +1085,7 @@
       }
 
       postEl.addEventListener('touchstart', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
         const touch = e.touches[0];
         startTouchX = touch.clientX;
         startTouchY = touch.clientY;
@@ -1027,7 +1101,7 @@
       }, { passive: true });
 
       postEl.addEventListener('touchend', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
         const wasHolding = isHolding;
         exitCleanMode();
         if (wasHolding) return;
@@ -1047,18 +1121,18 @@
 
       postEl.addEventListener('touchcancel', exitCleanMode);
       postEl.addEventListener('mousedown', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
         clearTimeout(holdTimer);
         holdTimer = setTimeout(enterCleanMode, 220);
       });
       postEl.addEventListener('mouseup', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
         exitCleanMode();
       });
       postEl.addEventListener('mouseleave', exitCleanMode);
       
       postEl.addEventListener('dblclick', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
         triggerDoubleTapLike();
       });
     });
