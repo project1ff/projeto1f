@@ -59,7 +59,7 @@
       z-index: 1;
     }
 
-    /* ESTILOS DO CARROSSEL HORIZONTAL */
+    /* ESTILOS DOS CARROSSÉIS HORIZONTAIS */
     .carousel-track {
       display: flex;
       width: 100%;
@@ -362,7 +362,7 @@
 
   <div class="feed">
 
-    <!-- POST 1 -->
+    <!-- POST 1: CAPA -->
     <div class="post" data-post-id="post_1">
       <img class="post-img adaptive-bg" src="sua-foto-capa.jpg" alt="Capa" />
       <div class="gradient-bottom"></div>
@@ -389,16 +389,35 @@
       </div>
     </div>
 
-    <!-- POST 2 -->
-    <div class="post" data-post-id="post_2">
-      <img class="post-img adaptive-bg" src="sua-foto-1.jpg" alt="Post 1" />
+    <!-- POST 2: CARROSSEL 1 (saude1, saude2, saude3) -->
+    <div class="post carousel-post" data-post-id="post_3">
+      <div class="carousel-badge">1/3</div>
+      
+      <div class="carousel-track">
+        <div class="carousel-slide">
+          <img class="adaptive-bg" src="saude1.jfif" alt="Saúde 1" />
+        </div>
+        <div class="carousel-slide">
+          <img class="adaptive-bg" src="saude2.jfif" alt="Saúde 2" />
+        </div>
+        <div class="carousel-slide">
+          <img class="adaptive-bg" src="saude3.jfif" alt="Saúde 3" />
+        </div>
+      </div>
+
+      <div class="carousel-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
           <div class="avatar-1f">1°F</div>
           <span class="username">Projeto 1 °F</span>
         </div>
-        <div class="caption">O mito da perfeição: não se compare com os destaques dos outros.</div>
+        <div class="caption">Arraste para o lado para ver todas as dicas! 👉</div>
       </div>
       <div class="sidebar">
         <div class="btn-wrapper">
@@ -416,25 +435,21 @@
       </div>
     </div>
 
-    <!-- POST 3 (CARROSSEL) -->
-    <div class="post" data-post-id="post_3">
-      <div class="carousel-badge" id="carouselCounter">1/3</div>
+    <!-- POST 3: CARROSSEL 2 (mundo1.jfif e mundo2.jfif) -->
+    <div class="post carousel-post" data-post-id="post_mundo">
+      <div class="carousel-badge">1/2</div>
       
-      <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-track">
         <div class="carousel-slide">
-          <img class="adaptive-bg" src="saude1.jfif" alt="Saúde 1" />
+          <img class="adaptive-bg" src="mundo1.jfif" alt="Mundo 1" />
         </div>
         <div class="carousel-slide">
-          <img class="adaptive-bg" src="saude2.jfif" alt="Saúde 2" />
-        </div>
-        <div class="carousel-slide">
-          <img class="adaptive-bg" src="saude3.jfif" alt="Saúde 3" />
+          <img class="adaptive-bg" src="mundo2.jfif" alt="Mundo 2" />
         </div>
       </div>
 
-      <div class="carousel-dots" id="carouselDots">
+      <div class="carousel-dots">
         <span class="dot active"></span>
-        <span class="dot"></span>
         <span class="dot"></span>
       </div>
 
@@ -444,7 +459,7 @@
           <div class="avatar-1f">1°F</div>
           <span class="username">Projeto 1 °F</span>
         </div>
-        <div class="caption">Arraste para o lado para ver todas as dicas! 👉</div>
+        <div class="caption">O mundo real vs. o mundo virtual. Deslize para ver! 👉</div>
       </div>
       <div class="sidebar">
         <div class="btn-wrapper">
@@ -547,68 +562,63 @@
       else img.addEventListener('load', () => applyDominantColor(img));
     });
 
-    // LÓGICA DO CARROSSEL (BOLINHAS E FREIO DE INÉRCIA)
-    const carouselTrack = document.getElementById('carouselTrack');
-    const carouselDots = document.querySelectorAll('#carouselDots .dot');
-    const carouselCounter = document.getElementById('carouselCounter');
+    // LÓGICA INDEPENDENTE PARA TODOS OS CARROSSÉIS (BOLINHAS, CONTADOR E FREIO DE INÉRCIA)
+    document.querySelectorAll('.carousel-post').forEach(postEl => {
+      const track = postEl.querySelector('.carousel-track');
+      const dots = postEl.querySelectorAll('.carousel-dots .dot');
+      const badge = postEl.querySelector('.carousel-badge');
+      const totalSlides = dots.length;
 
-    if (carouselTrack) {
+      if (!track) return;
+
       let currentIdx = 0;
       let startX = 0;
 
-      // Grava onde o dedo tocou
-      carouselTrack.addEventListener('touchstart', (e) => {
+      track.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
       }, { passive: true });
 
-      // Quando solta o dedo, analisa a força do arraste e trava em 1 slide apenas
-      carouselTrack.addEventListener('touchend', (e) => {
+      track.addEventListener('touchend', (e) => {
         const endX = e.changedTouches[0].clientX;
         const diff = startX - endX;
-        const slideWidth = carouselTrack.clientWidth;
+        const slideWidth = track.clientWidth;
 
-        // Se o usuário arrastou mais de 40px (foi intencional)
         if (Math.abs(diff) > 40) {
-          // Desabilita o scroll nativo momentaneamente para "matar" a inércia do navegador
-          carouselTrack.style.overflowX = 'hidden'; 
+          track.style.overflowX = 'hidden';
 
-          if (diff > 0 && currentIdx < 2) {
-            currentIdx++; // Vai para o próximo slide
+          if (diff > 0 && currentIdx < totalSlides - 1) {
+            currentIdx++;
           } else if (diff < 0 && currentIdx > 0) {
-            currentIdx--; // Volta um slide
+            currentIdx--;
           }
 
-          // Rola suavemente usando JavaScript exato para a foto certa
-          carouselTrack.scrollTo({
+          track.scrollTo({
             left: currentIdx * slideWidth,
             behavior: 'smooth'
           });
 
-          // Devolve o controle pro dedo após a rolagem terminar
           setTimeout(() => {
-            carouselTrack.style.overflowX = 'scroll';
+            track.style.overflowX = 'scroll';
           }, 350);
         }
       });
 
-      // Atualização dos marcadores
-      carouselTrack.addEventListener('scroll', () => {
-        const slideWidth = carouselTrack.clientWidth;
+      track.addEventListener('scroll', () => {
+        const slideWidth = track.clientWidth;
         if (slideWidth === 0) return;
-        const activeIndex = Math.round(carouselTrack.scrollLeft / slideWidth);
-        
-        currentIdx = activeIndex; // Mantém a sincronia
+        const activeIndex = Math.round(track.scrollLeft / slideWidth);
+        currentIdx = activeIndex;
 
-        carouselDots.forEach((dot, idx) => {
+        dots.forEach((dot, idx) => {
           dot.classList.toggle('active', idx === activeIndex);
         });
-        if (carouselCounter) {
-          carouselCounter.textContent = `${activeIndex + 1}/3`;
+        if (badge) {
+          badge.textContent = `${activeIndex + 1}/${totalSlides}`;
         }
       });
-    }
+    });
 
-    // (RESTANTE DA LÓGICA DE COMENTÁRIOS E PERFIL VEM ABAIXO...)
+    // AVATARES E COMENTÁRIOS
     const avatarColors = [
       'linear-gradient(135deg, #FF6B6B, #EE5253)',
       'linear-gradient(135deg, #48DBFB, #0ABDE3)',
