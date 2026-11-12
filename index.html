@@ -160,7 +160,7 @@
     .drawer {
       position: fixed;
       inset: 0;
-      z-index: 999;
+      z-index: 9999;
       display: none;
       justify-content: center;
     }
@@ -170,6 +170,7 @@
       position: absolute;
       inset: 0;
       background: rgba(0, 0, 0, 0.65);
+      z-index: 1;
     }
 
     .drawer-box {
@@ -177,12 +178,12 @@
       bottom: 0;
       width: 100%;
       max-width: 450px;
-      height: 58%;
+      height: 60%;
       background: #1a1a1a;
       border-radius: 18px 18px 0 0;
       display: flex;
       flex-direction: column;
-      z-index: 2;
+      z-index: 10;
     }
 
     .drawer-top {
@@ -216,16 +217,38 @@
     .comment {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-size: 14px;
     }
 
-    .comment strong { color: #bbb; }
+    .comment-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .comment-avatar svg {
+      width: 20px;
+      height: 20px;
+      fill: rgba(255, 255, 255, 0.9);
+    }
+
+    .comment strong {
+      color: #ccc;
+      margin-right: 4px;
+    }
 
     .drawer-bottom {
-      padding: 14px;
+      padding: 14px 14px 24px 14px;
       background: #111;
       border-top: 1px solid #333;
+      position: relative;
+      z-index: 20;
     }
 
     .chips {
@@ -238,7 +261,7 @@
       background: #2e2e2e;
       color: #fff;
       border: 1px solid #444;
-      padding: 9px 14px;
+      padding: 10px 15px;
       border-radius: 20px;
       font-size: 14px;
       cursor: pointer;
@@ -362,7 +385,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
-      getFirestore, doc, setDoc, increment, arrayUnion, onSnapshot 
+      getFirestore, doc, setDoc, increment, onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -378,24 +401,77 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Paleta de cores e ícones SVG embutidos (100% offline-safe)
+    const avatarColors = [
+      'linear-gradient(135deg, #FF6B6B, #EE5253)',
+      'linear-gradient(135deg, #48DBFB, #0ABDE3)',
+      'linear-gradient(135deg, #1DD1A1, #10AC84)',
+      'linear-gradient(135deg, #F368E0, #FF9FF3)',
+      'linear-gradient(135deg, #FF9F43, #EE5A24)',
+      'linear-gradient(135deg, #5F27CD, #341F97)',
+      'linear-gradient(135deg, #54A0FF, #2E86DE)'
+    ];
+
+    const avatarIcons = [
+      // Perfil clássico
+      `<svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`,
+      // Rosto sorridente
+      `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm-7 0c.83 0 1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm3.5 9.5c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>`,
+      // Estrela
+      `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`,
+      // Raio / Energia
+      `<svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>`
+    ];
+
+    // Gera ou recupera uma identidade de visitante para este aparelho
+    function getVisitorIdentity() {
+      let saved = localStorage.getItem('visitor_identity');
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+      const randomNum = Math.floor(100 + Math.random() * 900);
+      const identity = {
+        user: `@visitante_${randomNum}`,
+        colorIdx: Math.floor(Math.random() * avatarColors.length),
+        iconIdx: Math.floor(Math.random() * avatarIcons.length)
+      };
+      localStorage.setItem('visitor_identity', JSON.stringify(identity));
+      return identity;
+    }
+
     const postsData = {};
     let activePostId = null;
 
     const drawer = document.getElementById('drawer');
     const commentsArea = document.getElementById('commentsArea');
 
+    function getSafeComments(postId) {
+      const raw = postsData[postId]?.comments;
+      return Array.isArray(raw) ? raw : [];
+    }
+
     function renderComments(postId) {
       commentsArea.innerHTML = '';
-      const list = postsData[postId]?.comments || [];
+      const list = getSafeComments(postId);
       if (list.length === 0) {
         commentsArea.innerHTML = '<div style="color:#777;font-size:14px;text-align:center;margin-top:20px;">Seja o primeiro a comentar!</div>';
         return;
       }
-      list.forEach(item => {
-        const text = typeof item === 'string' ? item : item.text;
+      list.forEach((item, index) => {
+        const text = typeof item === 'string' ? item : (item?.text || '');
+        if (!text) return;
+
+        // Usa o visitante salvo no comentário ou gera um visual consistente para comentários antigos
+        const user = item?.user || `@visitante_${100 + index}`;
+        const color = avatarColors[item?.colorIdx ?? (index % avatarColors.length)];
+        const icon = avatarIcons[item?.iconIdx ?? (index % avatarIcons.length)];
+
         const div = document.createElement('div');
         div.className = 'comment';
-        div.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;background:#555;flex-shrink:0;"></div><div><strong>@turma</strong> ${text}</div>`;
+        div.innerHTML = `
+          <div class="comment-avatar" style="background: ${color};">${icon}</div>
+          <div><strong>${user}</strong> ${text}</div>
+        `;
         commentsArea.appendChild(div);
       });
       commentsArea.scrollTop = commentsArea.scrollHeight;
@@ -417,63 +493,13 @@
         const data = snapshot.exists() ? snapshot.data() : { likes: 0, comments: [] };
         postsData[postId] = data;
 
-        const safeLikes = Math.max(0, data.likes || 0);
+        const safeLikes = Math.max(0, Number(data.likes) || 0);
         likeCountEl.textContent = safeLikes;
-        commentCountEl.textContent = (data.comments || []).length;
+        commentCountEl.textContent = getSafeComments(postId).length;
 
         if (drawer.classList.contains('open') && activePostId === postId) {
           renderComments(postId);
         }
-      }, (error) => {
-        console.error("Erro no Firestore:", error);
       });
 
-      likeBtn.addEventListener('click', async () => {
-        const isLiked = likeBtn.classList.toggle('liked');
-        localStorage.setItem('liked_' + postId, isLiked);
-
-        // Atualiza na tela na hora para resposta instantânea
-        const currentNum = parseInt(likeCountEl.textContent, 10) || 0;
-        likeCountEl.textContent = Math.max(0, isLiked ? currentNum + 1 : currentNum - 1);
-
-        try {
-          await setDoc(postRef, {
-            likes: increment(isLiked ? 1 : -1)
-          }, { merge: true });
-        } catch (err) {
-          alert("Erro ao salvar curtida no Firebase. Verifique se o Firestore está ativado: " + err.message);
-        }
-      });
-
-      commentBtn.addEventListener('click', () => {
-        activePostId = postId;
-        renderComments(postId);
-        drawer.classList.add('open');
-      });
-    });
-
-    const closeDrawer = () => {
-      drawer.classList.remove('open');
-      activePostId = null;
-    };
-    document.getElementById('closeBtn').addEventListener('click', closeDrawer);
-    document.getElementById('drawerBg').addEventListener('click', closeDrawer);
-
-    document.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', async () => {
-        if (!activePostId) return;
-        const msg = chip.getAttribute('data-msg');
-        const postRef = doc(db, "reels_posts", activePostId);
-
-        try {
-          await setDoc(postRef, {
-            comments: arrayUnion({ text: msg, id: Date.now() + Math.random() })
-          }, { merge: true });
-        } catch (err) {
-          alert("Erro ao salvar comentário no Firebase: " + err.message);
-        }
-      });
-    });
-  </script>
-</body>
-</html>
+      likeBtn.addEventListener('click
