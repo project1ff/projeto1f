@@ -1,5 +1,22 @@
-<style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Reels Feed - Saúde Mental</title>
+  
+  <!-- Ícones -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      -webkit-tap-highlight-color: transparent; 
+      user-select: none; 
+    }
+    
     html, body { 
       background-color: #000; 
       color: #fff; 
@@ -7,8 +24,9 @@
       overflow: hidden; 
       width: 100%;
       height: 100%;
-      position: fixed; /* Evita que a barra do navegador do celular empurre o site */
+      position: fixed; /* Evita que a barra do telemóvel empurre o site */
     }
+    
     .app-container { 
       width: 100%; 
       max-width: 450px; 
@@ -18,10 +36,12 @@
       background: #000; 
       overflow-y: scroll; 
       scroll-snap-type: y mandatory; 
-      -webkit-overflow-scrolling: touch; /* Deixa a rolagem suave no iPhone e Android */
+      -webkit-overflow-scrolling: touch; 
       scrollbar-width: none; 
     }
+    
     .app-container::-webkit-scrollbar { display: none; }
+    
     .post { 
       position: relative; 
       width: 100%; 
@@ -29,26 +49,82 @@
       scroll-snap-align: start; 
       scroll-snap-stop: always; 
       overflow: hidden; 
-      background: #000; 
+      background: #111; /* Fundo ligeiramente cinza para destacar se a foto falhar */
       display: flex; 
       align-items: center; 
       justify-content: center; 
     }
+    
+    /* Regra corrigida para evitar o zoom e garantir que a foto cabe inteira */
     .post > img { 
       position: absolute; 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain; /* Garante que a imagem inteira apareça no celular sem cortar */
+      width: 100% !important; 
+      height: 100% !important; 
+      object-fit: contain !important; 
       z-index: 1; 
     }
-    .overlay-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 220px; background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent); pointer-events: none; z-index: 2; }
-    .actions-sidebar { position: absolute; right: 12px; bottom: 90px; display: flex; flex-direction: column; align-items: center; gap: 16px; z-index: 10; }
-    .action-btn { background: none; border: none; color: #fff; display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
+    
+    .overlay-bottom { 
+      position: absolute; 
+      bottom: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 220px; 
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 15%, transparent); 
+      pointer-events: none; 
+      z-index: 2; 
+    }
+    
+    .actions-sidebar { 
+      position: absolute; 
+      right: 12px; 
+      bottom: 90px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 16px; 
+      z-index: 10; 
+    }
+    
+    .action-btn { 
+      background: none; 
+      border: none; 
+      color: #fff; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      cursor: pointer; 
+      gap: 4px; 
+    }
+    
     .action-btn svg { width: 28px; height: 28px; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7)); }
     .action-count { font-size: 12px; font-weight: 600; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9); }
-    .post-info { position: absolute; bottom: 35px; left: 14px; right: 75px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }
+    
+    .post-info { 
+      position: absolute; 
+      bottom: 35px; 
+      left: 14px; 
+      right: 75px; 
+      z-index: 10; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+    }
+    
     .user-profile { display: flex; align-items: center; gap: 10px; }
     .avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #fff; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
     .username { font-weight: 700; font-size: 14px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
     .caption { font-size: 13px; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
   </style>
+</head>
+<body>
+
+  <div class="app-container" id="feed">
+
+    <!-- POST 1 (CAPA) -->
+    <div class="post" data-id="post_1">
+      <img src="imagy.jpg" alt="Capa" />
+      
+      <div class="overlay-bottom"></div>
+      <div class="post-info">
+        <div class="user-profile">
