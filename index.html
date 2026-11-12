@@ -502,4 +502,71 @@
         }
       });
 
-      likeBtn.addEventListener('click
+      likeBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const isLiked = likeBtn.classList.toggle('liked');
+        localStorage.setItem('liked_' + postId, isLiked);
+
+        const currentNum = parseInt(likeCountEl.textContent, 10) || 0;
+        likeCountEl.textContent = Math.max(0, isLiked ? currentNum + 1 : currentNum - 1);
+
+        try {
+          await setDoc(postRef, {
+            likes: increment(isLiked ? 1 : -1)
+          }, { merge: true });
+        } catch (err) {
+          alert("Erro ao curtir: " + err.message);
+        }
+      });
+
+      commentBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activePostId = postId;
+        renderComments(postId);
+        drawer.classList.add('open');
+      });
+    });
+
+    const closeDrawer = () => {
+      drawer.classList.remove('open');
+      activePostId = null;
+    };
+    document.getElementById('closeBtn').addEventListener('click', closeDrawer);
+    document.getElementById('drawerBg').addEventListener('click', closeDrawer);
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!activePostId) return;
+
+        const msg = chip.getAttribute('data-msg');
+        const visitor = getVisitorIdentity();
+        const currentList = getSafeComments(activePostId);
+
+        const newComment = {
+          text: msg,
+          user: visitor.user,
+          colorIdx: visitor.colorIdx,
+          iconIdx: visitor.iconIdx,
+          id: Date.now()
+        };
+
+        const updatedList = [...currentList, newComment];
+
+        if (!postsData[activePostId]) postsData[activePostId] = {};
+        postsData[activePostId].comments = updatedList;
+        renderComments(activePostId);
+
+        const postRef = doc(db, "reels_posts", activePostId);
+        try {
+          await setDoc(postRef, {
+            comments: updatedList
+          }, { merge: true });
+        } catch (err) {
+          alert("Erro ao comentar: " + err.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
