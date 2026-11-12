@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Reels Feed - Saúde Mental</title>
   
-  <!-- Ícones -->
   <script src="https://unpkg.com/feather-icons"></script>
   
   <style>
@@ -17,22 +16,22 @@
       user-select: none; 
     }
     
-    html, body { 
+    body { 
       background-color: #000; 
       color: #fff; 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-      overflow: hidden; 
-      width: 100%;
-      height: 100%;
-      position: fixed; /* Evita que a barra do telemóvel empurre o site */
+      /* Removido o position: fixed que estava a bugar o telemóvel */
+      display: flex;
+      justify-content: center;
+      margin: 0;
     }
     
     .app-container { 
       width: 100%; 
       max-width: 450px; 
-      height: 100%; 
-      margin: 0 auto;
-      position: relative; 
+      /* Usa dvh (dynamic viewport height) para lidar perfeitamente com a barra do telemóvel */
+      height: 100vh;
+      height: 100dvh; 
       background: #000; 
       overflow-y: scroll; 
       scroll-snap-type: y mandatory; 
@@ -45,22 +44,22 @@
     .post { 
       position: relative; 
       width: 100%; 
-      height: 100%; 
+      height: 100vh;
+      height: 100dvh; 
       scroll-snap-align: start; 
       scroll-snap-stop: always; 
       overflow: hidden; 
-      background: #111; /* Fundo ligeiramente cinza para destacar se a foto falhar */
+      background: #111; 
       display: flex; 
       align-items: center; 
       justify-content: center; 
     }
     
-    /* Regra corrigida para evitar o zoom e garantir que a foto cabe inteira */
     .post > img { 
       position: absolute; 
-      width: 100% !important; 
-      height: 100% !important; 
-      object-fit: contain !important; 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* Mantém a foto sem cortes */
       z-index: 1; 
     }
     
@@ -86,19 +85,8 @@
       z-index: 10; 
     }
     
-    .action-btn { 
-      background: none; 
-      border: none; 
-      color: #fff; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      cursor: pointer; 
-      gap: 4px; 
-    }
-    
+    .action-btn { background: none; border: none; color: #fff; cursor: pointer; }
     .action-btn svg { width: 28px; height: 28px; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7)); }
-    .action-count { font-size: 12px; font-weight: 600; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9); }
     
     .post-info { 
       position: absolute; 
@@ -112,7 +100,7 @@
     }
     
     .user-profile { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #fff; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
+    .avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #fff; object-fit: cover;}
     .username { font-weight: 700; font-size: 14px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
     .caption { font-size: 13px; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
   </style>
@@ -121,32 +109,24 @@
 
   <div class="app-container" id="feed">
 
-    <!-- POST 1 (CAPA) -->
     <div class="post" data-id="post_1">
-      <!-- Imagem principal atualizada -->
       <img src="sua-foto-capa.jpg" alt="Capa" />
-      
       <div class="overlay-bottom"></div>
       <div class="post-info">
         <div class="user-profile">
-          <!-- Imagem de perfil (avatar) atualizada -->
           <img class="avatar" src="sua-foto-capa.jpg" />
           <span class="username">@saude_mental_digital</span>
         </div>
         <div class="caption">O peso da vida digital. Arraste para baixo para ver o impacto! 👇</div>
       </div>
       <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="send"></i></button>
+        <button class="action-btn"><i data-feather="heart"></i></button>
+        <button class="action-btn"><i data-feather="message-circle"></i></button>
       </div>
     </div>
 
-    <!-- POST 2 -->
     <div class="post" data-id="post_2">
-      <!-- Imagem principal atualizada -->
       <img src="sua-foto-1.jpg" alt="Post 1" />
-      
       <div class="overlay-bottom"></div>
       <div class="post-info">
         <div class="user-profile">
@@ -156,16 +136,13 @@
         <div class="caption">O mito da perfeição: não se compare com os destaques dos outros.</div>
       </div>
       <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
+        <button class="action-btn"><i data-feather="heart"></i></button>
+        <button class="action-btn"><i data-feather="message-circle"></i></button>
       </div>
     </div>
 
-    <!-- POST 3 -->
     <div class="post" data-id="post_3">
-      <!-- Imagem principal atualizada -->
       <img src="sua-foto-2.jpg" alt="Post 2" />
-      
       <div class="overlay-bottom"></div>
       <div class="post-info">
         <div class="user-profile">
@@ -175,8 +152,8 @@
         <div class="caption">Tome o controle do seu feed! Siga conteúdos que te inspiram.</div>
       </div>
       <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
+        <button class="action-btn"><i data-feather="heart"></i></button>
+        <button class="action-btn"><i data-feather="message-circle"></i></button>
       </div>
     </div>
 
