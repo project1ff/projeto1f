@@ -1,110 +1,54 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Reels Feed - Saúde Mental</title>
-  <script src="https://unpkg.com/feather-icons"></script>
-  <style>
+<style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
-    body { background-color: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; height: 100dvh; }
-    .app-container { width: 100%; max-width: 450px; height: 100vh; height: 100dvh; position: relative; background: #000; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+    html, body { 
+      background-color: #000; 
+      color: #fff; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      overflow: hidden; 
+      width: 100%;
+      height: 100%;
+      position: fixed; /* Evita que a barra do navegador do celular empurre o site */
+    }
+    .app-container { 
+      width: 100%; 
+      max-width: 450px; 
+      height: 100%; 
+      margin: 0 auto;
+      position: relative; 
+      background: #000; 
+      overflow-y: scroll; 
+      scroll-snap-type: y mandatory; 
+      -webkit-overflow-scrolling: touch; /* Deixa a rolagem suave no iPhone e Android */
+      scrollbar-width: none; 
+    }
     .app-container::-webkit-scrollbar { display: none; }
-    .post { position: relative; width: 100%; height: 100vh; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
-    .post > img { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-    .overlay-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 220px; background: linear-gradient(to top, rgba(0,0,0,0.8) 20%, transparent); pointer-events: none; z-index: 2; }
-    .actions-sidebar { position: absolute; right: 12px; bottom: 80px; display: flex; flex-direction: column; align-items: center; gap: 16px; z-index: 10; }
+    .post { 
+      position: relative; 
+      width: 100%; 
+      height: 100%; 
+      scroll-snap-align: start; 
+      scroll-snap-stop: always; 
+      overflow: hidden; 
+      background: #000; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    .post > img { 
+      position: absolute; 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* Garante que a imagem inteira apareça no celular sem cortar */
+      z-index: 1; 
+    }
+    .overlay-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 220px; background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent); pointer-events: none; z-index: 2; }
+    .actions-sidebar { position: absolute; right: 12px; bottom: 90px; display: flex; flex-direction: column; align-items: center; gap: 16px; z-index: 10; }
     .action-btn { background: none; border: none; color: #fff; display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
     .action-btn svg { width: 28px; height: 28px; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7)); }
     .action-count { font-size: 12px; font-weight: 600; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9); }
-    .post-info { position: absolute; bottom: 25px; left: 14px; right: 75px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }
+    .post-info { position: absolute; bottom: 35px; left: 14px; right: 75px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }
     .user-profile { display: flex; align-items: center; gap: 10px; }
     .avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #fff; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
     .username { font-weight: 700; font-size: 14px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
     .caption { font-size: 13px; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
   </style>
-</head>
-<body>
-
-  <div class="app-container" id="feed">
-
-    <!-- POST 1 (CAPA) -->
-    <div class="post" data-id="post_1">
-      <!-- COLOQUE A FOTO DA CAPA AQUI -->
-      <img src="sua-foto-capa.jpg" alt="Capa Saúde Mental" />
-      <div class="overlay-bottom"></div>
-      <div class="post-info">
-        <div class="user-profile">
-          <img class="avatar" src="sua-foto-capa.jpg" /> <!-- Pode usar a mesma foto ou outra -->
-          <span class="username">@seu_trabalho_digital</span>
-        </div>
-        <div class="caption">Saúde Mental nas Redes Sociais. Arraste para baixo para ver o impacto! 👇</div>
-      </div>
-      <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="send"></i></button>
-      </div>
-    </div>
-
-    <!-- POST 2 -->
-    <div class="post" data-id="post_2">
-      <!-- COLOQUE SUA SEGUNDA FOTO AQUI -->
-      <img src="sua-foto-1.jpg" alt="Post 1" />
-      <div class="overlay-bottom"></div>
-      <div class="post-info">
-        <div class="user-profile">
-          <img class="avatar" src="sua-foto-capa.jpg" />
-          <span class="username">@seu_trabalho_digital</span>
-        </div>
-        <div class="caption">O mito da perfeição: não se compare com os destaques dos outros.</div>
-      </div>
-      <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
-      </div>
-    </div>
-
-    <!-- POST 3 -->
-    <div class="post" data-id="post_3">
-      <!-- COLOQUE SUA TERCEIRA FOTO AQUI -->
-      <img src="sua-foto-2.jpg" alt="Post 2" />
-      <div class="overlay-bottom"></div>
-      <div class="post-info">
-        <div class="user-profile">
-          <img class="avatar" src="sua-foto-capa.jpg" />
-          <span class="username">@seu_trabalho_digital</span>
-        </div>
-        <div class="caption">Tome o controle do seu feed! Siga conteúdos que te inspiram.</div>
-      </div>
-      <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
-      </div>
-    </div>
-
-    <!-- POST 4 (CONCLUSÃO) -->
-    <div class="post" data-id="post_4">
-      <!-- COLOQUE SUA QUARTA FOTO AQUI -->
-      <img src="sua-foto-3.jpg" alt="Post 3" />
-      <div class="overlay-bottom"></div>
-      <div class="post-info">
-        <div class="user-profile">
-          <img class="avatar" src="sua-foto-capa.jpg" />
-          <span class="username">@seu_trabalho_digital</span>
-        </div>
-        <div class="caption">Desconecte-se para se reconectar consigo mesmo. Sua saúde mental vale mais.</div>
-      </div>
-      <div class="actions-sidebar">
-        <button class="action-btn"><i data-feather="heart"></i><span class="action-count">0</span></button>
-        <button class="action-btn"><i data-feather="message-circle"></i><span class="action-count">0</span></button>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    feather.replace();
-  </script>
-</body>
-</html>
