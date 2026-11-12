@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Reels Feed - Saúde Mental</title>
   
-  <script src="https://unpkg.com/feather-icons"></script>
-  
   <style>
     * { 
       box-sizing: border-box; 
@@ -94,13 +92,13 @@
       transition: transform 0.2s;
     }
     .action-btn:active { transform: scale(1.2); }
-    .action-btn svg { width: 28px; height: 28px; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7)); transition: all 0.2s; }
+    .action-btn svg { filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7)); transition: all 0.2s; }
     .action-count { font-size: 13px; font-weight: 600; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9); }
     
     /* Cor do coração quando curtido */
     .like-btn.liked svg {
       fill: #ff2a54;
-      color: #ff2a54;
+      stroke: #ff2a54;
     }
     
     .post-info { 
@@ -226,95 +224,4 @@
           <img class="avatar" src="sua-foto-capa.jpg" />
           <span class="username">@saude_mental_digital</span>
         </div>
-        <div class="caption">O peso da vida digital. Arraste para baixo para ver o impacto! 👇</div>
-      </div>
-      <div class="actions-sidebar">
-        <!-- Botões com contadores e classes para o JavaScript -->
-        <button class="action-btn like-btn">
-          <i data-feather="heart"></i>
-          <span class="action-count">12</span>
-        </button>
-        <button class="action-btn comment-btn">
-          <i data-feather="message-circle"></i>
-          <span class="action-count">3</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- POST 2 -->
-    <div class="post" data-id="post_2">
-      <img src="sua-foto-1.jpg" alt="Post 1" />
-      <div class="overlay-bottom"></div>
-      <div class="post-info">
-        <div class="user-profile">
-          <img class="avatar" src="sua-foto-capa.jpg" />
-          <span class="username">@saude_mental_digital</span>
-        </div>
-        <div class="caption">O mito da perfeição: não se compare com os destaques dos outros.</div>
-      </div>
-      <div class="actions-sidebar">
-        <button class="action-btn like-btn">
-          <i data-feather="heart"></i>
-          <span class="action-count">24</span>
-        </button>
-        <button class="action-btn comment-btn">
-          <i data-feather="message-circle"></i>
-          <span class="action-count">5</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- POST 3 -->
-    <div class="post" data-id="post_3">
-      <img src="sua-foto-2.jpg" alt="Post 2" />
-      <div class="overlay-bottom"></div>
-      <div class="post-info">
-        <div class="user-profile">
-          <img class="avatar" src="sua-foto-capa.jpg" />
-          <span class="username">@saude_mental_digital</span>
-        </div>
-        <div class="caption">Tome o controle do seu feed! Siga conteúdos que te inspiram.</div>
-      </div>
-      <div class="actions-sidebar">
-        <button class="action-btn like-btn">
-          <i data-feather="heart"></i>
-          <span class="action-count">18</span>
-        </button>
-        <button class="action-btn comment-btn">
-          <i data-feather="message-circle"></i>
-          <span class="action-count">2</span>
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- GAVETA DE COMENTÁRIOS (Oculta por padrão) -->
-  <div class="comments-drawer" id="comments-drawer">
-    <div class="drawer-backdrop" id="drawer-backdrop"></div>
-    <div class="drawer-content">
-      <div class="drawer-header">
-        Comentários
-        <button class="close-drawer" id="close-drawer">&times;</button>
-      </div>
-      
-      <!-- Lista onde os comentários vão aparecer -->
-      <div class="comments-list" id="comments-list">
-        <!-- Comentário inicial de exemplo -->
-        <div class="comment-item">
-          <img class="avatar" src="sua-foto-capa.jpg">
-          <div class="comment-item-text">
-            <strong>@aluno_curioso</strong> Muito bom o tema do trabalho! 👏👏
-          </div>
-        </div>
-      </div>
-      
-      <!-- Botões de comentários prontos -->
-      <div class="drawer-footer">
-        <div style="font-size: 12px; color: #aaa; margin-bottom: 8px;">Toque para comentar:</div>
-        <div class="chips-container">
-          <button class="chip-btn" data-text="Bacana 👍">Bacana 👍</button>
-          <button class="chip-btn" data-text="Legal 🤩">Legal 🤩</button>
-          <button class="chip-btn" data-text="Maneiro 🔥">Maneiro 🔥</button>
-          <button class="chip-btn" data-text="Muito bom 👏">Muito bom 👏</button>
-          <button class="chip-btn"
+        <div class="caption">O peso da vida digital. Arraste para baixo para ver o impacto!
