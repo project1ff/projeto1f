@@ -94,6 +94,31 @@
       pointer-events: none;
     }
 
+    /* TELA DO TIMER (Derretimento) */
+    .timer-slide {
+      background-color: #111;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    .timer-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ff2a54;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 10px rgba(255,42,84,0.4);
+    }
+    .timer-display {
+      font-size: 56px;
+      font-weight: bold;
+      margin: 20px 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-desc {
+      font-size: 15px;
+      color: #ccc;
+    }
+
     /* TRANSIÇÃO DO MODO LIMPO (SEGURAR A TELA) */
     .gradient-bottom,
     .sidebar,
@@ -131,26 +156,11 @@
     }
 
     @keyframes heartPop {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.2);
-      }
-      25% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.18);
-      }
-      45% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0.95);
-      }
-      65% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(1.15);
-      }
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+      25% { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
+      45% { opacity: 1; transform: translate(-50%, -50%) scale(0.95); }
+      65% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); }
     }
 
     /* Bolinhas indicadoras do carrossel */
@@ -424,6 +434,54 @@
 
   <div class="feed">
 
+    <!-- NOVO POST: CARROSSEL DERRETIMENTO MENTAL (GIF e Timer) -->
+    <div class="post carousel-post" data-post-id="post_derretimento" id="post_derretimento">
+      <div class="carousel-badge">1/2</div>
+      <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      
+      <div class="carousel-track" id="derretimento_track">
+        <!-- Slide 1: GIF Infinito -->
+        <div class="carousel-slide">
+          <img class="adaptive-bg" src="gif.gif" alt="Gif Derretimento Mental" />
+        </div>
+        <!-- Slide 2: Cronômetro -->
+        <div class="carousel-slide timer-slide">
+          <h2 class="timer-title">Derretimento Mental</h2>
+          <p class="timer-desc">Você perdeu a noção do tempo por:</p>
+          <div class="timer-display"><span id="meltdown_timer">0.0</span>s</div>
+          <p class="timer-desc">O tempo voa quando a gente não pensa.<br>Cuidado com o ciclo infinito!</p>
+        </div>
+      </div>
+
+      <div class="carousel-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+      </div>
+
+      <div class="gradient-bottom"></div>
+      <div class="info">
+        <div class="profile">
+          <div class="avatar-1f">1°F</div>
+          <span class="username">Projeto 1 °F</span>
+        </div>
+        <div class="caption">O quão rápido sua mente derrete? Assista o gif e arraste para descobrir o tempo perdido! ⏰🤯</div>
+      </div>
+      <div class="sidebar">
+        <div class="btn-wrapper">
+          <button type="button" class="btn-action like-btn" aria-label="Curtir">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <span class="count like-count">0</span>
+        </div>
+        <div class="btn-wrapper">
+          <button type="button" class="btn-action comment-btn" aria-label="Comentar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          </button>
+          <span class="count comment-count">0</span>
+        </div>
+      </div>
+    </div>
+
     <!-- POST 1: CAPA (capa.jfif) -->
     <div class="post standard-post" data-post-id="post_1">
       <img class="post-img adaptive-bg" src="capa.jfif" alt="Capa" />
@@ -672,7 +730,7 @@
         }
 
         const container = img.closest('.carousel-slide') || img.closest('.post');
-        if (container) {
+        if (container && !container.classList.contains('timer-slide')) {
           container.style.backgroundColor = dominantHex;
         }
       } catch (e) {}
@@ -738,6 +796,63 @@
         }
       });
     });
+
+    // ============================================
+    // LÓGICA DO CRONÔMETRO DERRETIMENTO MENTAL
+    // ============================================
+    let isWatchingGif = false;
+    let watchStartTime = 0;
+    let totalWatchedTime = 0;
+    let timerInterval = null;
+
+    const derretimentoPost = document.getElementById('post_derretimento');
+    const derretimentoTrack = document.getElementById('derretimento_track');
+    const timerDisplay = document.getElementById('meltdown_timer');
+
+    let isPostInView = false;
+
+    // Detecta quando o usuário está olhando o post de derretimento
+    if (derretimentoPost && derretimentoTrack && timerDisplay) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          isPostInView = entry.isIntersecting;
+          checkWatchingState();
+        });
+      }, { threshold: 0.6 });
+      
+      observer.observe(derretimentoPost);
+
+      derretimentoTrack.addEventListener('scroll', () => {
+        checkWatchingState();
+      });
+    }
+
+    function checkWatchingState() {
+      if(!derretimentoTrack) return;
+      const slideWidth = derretimentoTrack.clientWidth;
+      const currentIdx = slideWidth > 0 ? Math.round(derretimentoTrack.scrollLeft / slideWidth) : 0;
+
+      // Se está no post e no primeiro slide (o do gif)
+      if (isPostInView && currentIdx === 0) {
+        if (!isWatchingGif) {
+          isWatchingGif = true;
+          watchStartTime = Date.now();
+          timerInterval = setInterval(() => {
+            const currentSession = (Date.now() - watchStartTime) / 1000;
+            timerDisplay.innerText = (totalWatchedTime + currentSession).toFixed(1);
+          }, 100);
+        }
+      } else {
+        // Se saiu do gif ou do post
+        if (isWatchingGif) {
+          isWatchingGif = false;
+          totalWatchedTime += (Date.now() - watchStartTime) / 1000;
+          clearInterval(timerInterval);
+          timerDisplay.innerText = totalWatchedTime.toFixed(1);
+        }
+      }
+    }
+    // ============================================
 
     // AVATARES E COMENTÁRIOS
     const avatarColors = [
@@ -851,7 +966,7 @@
             likes: increment(nextState ? 1 : -1)
           }, { merge: true });
         } catch (err) {
-          alert("Erro ao curtir: " + err.message);
+          console.log("Erro ao curtir:", err);
         }
       }
 
@@ -941,47 +1056,22 @@
         exitCleanMode();
       });
       postEl.addEventListener('mouseleave', exitCleanMode);
+      
+      // FINALIZANDO O CODIGO QUE ESTAVA CORTADO:
       postEl.addEventListener('dblclick', (e) => {
         if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
         triggerDoubleTapLike();
       });
     });
 
-    const closeDrawer = () => {
+    // FECHAR GAVETA E FUNDO DA GAVETA
+    document.getElementById('closeBtn').addEventListener('click', () => {
       drawer.classList.remove('open');
-      activePostId = null;
-    };
-    document.getElementById('closeBtn').addEventListener('click', closeDrawer);
-    document.getElementById('drawerBg').addEventListener('click', closeDrawer);
-
-    document.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        if (!activePostId) return;
-        const msg = chip.getAttribute('data-msg');
-        const visitor = getVisitorIdentity();
-        const currentList = getSafeComments(activePostId);
-        const newComment = {
-          text: msg,
-          user: visitor.user,
-          colorIdx: visitor.colorIdx,
-          iconIdx: visitor.iconIdx,
-          id: Date.now()
-        };
-        const updatedList = [...currentList, newComment];
-        if (!postsData[activePostId]) postsData[activePostId] = {};
-        postsData[activePostId].comments = updatedList;
-        renderComments(activePostId);
-        const postRef = doc(db, "reels_posts", activePostId);
-        try {
-          await setDoc(postRef, {
-            comments: updatedList
-          }, { merge: true });
-        } catch (err) {
-          alert("Erro ao comentar: " + err.message);
-        }
-      });
     });
+    document.getElementById('drawerBg').addEventListener('click', () => {
+      drawer.classList.remove('open');
+    });
+
   </script>
 </body>
 </html>
