@@ -11,6 +11,7 @@
       padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      -webkit-touch-callout: none;
     }
 
     html, body {
@@ -57,6 +58,7 @@
       object-fit: contain;
       display: block;
       z-index: 1;
+      pointer-events: none;
     }
 
     /* ESTILOS DOS CARROSSÉIS HORIZONTAIS */
@@ -89,6 +91,66 @@
       height: 100%;
       object-fit: contain;
       display: block;
+      pointer-events: none;
+    }
+
+    /* TRANSIÇÃO DO MODO LIMPO (SEGURAR A TELA) */
+    .gradient-bottom,
+    .sidebar,
+    .info,
+    .carousel-dots,
+    .carousel-badge {
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .post.clean-view .gradient-bottom,
+    .post.clean-view .sidebar,
+    .post.clean-view .info,
+    .post.clean-view .carousel-dots,
+    .post.clean-view .carousel-badge {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    /* CORAÇÃO GIGANTE DO DUPLO TOQUE */
+    .double-tap-heart {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 96px;
+      height: 96px;
+      z-index: 35;
+      pointer-events: none;
+      opacity: 0;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+    }
+
+    .double-tap-heart.animate {
+      animation: heartPop 0.75s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+    }
+
+    @keyframes heartPop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+      }
+      25% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.18);
+      }
+      45% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.95);
+      }
+      65% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.15);
+      }
     }
 
     /* Bolinhas indicadoras do carrossel */
@@ -365,6 +427,7 @@
     <!-- POST 1: CAPA (capa.jfif) -->
     <div class="post" data-post-id="post_1">
       <img class="post-img adaptive-bg" src="capa.jfif" alt="Capa" />
+      <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
@@ -392,6 +455,7 @@
     <!-- POST 2: CARROSSEL SAÚDE (saude1, saude2, saude3) -->
     <div class="post carousel-post" data-post-id="post_3">
       <div class="carousel-badge">1/3</div>
+      <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       
       <div class="carousel-track">
         <div class="carousel-slide">
@@ -438,6 +502,7 @@
     <!-- POST 3: CICLO (ciclo.png) -->
     <div class="post" data-post-id="post_ciclo">
       <img class="post-img adaptive-bg" src="ciclo.png" alt="Ciclo" />
+      <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
@@ -465,6 +530,7 @@
     <!-- POST 4: CARROSSEL MUNDO (mundo1.jfif e mundo2.jfif) -->
     <div class="post carousel-post" data-post-id="post_mundo">
       <div class="carousel-badge">1/2</div>
+      <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       
       <div class="carousel-track">
         <div class="carousel-slide">
@@ -722,6 +788,7 @@
       const likeCountEl = postEl.querySelector('.like-count');
       const commentBtn = postEl.querySelector('.comment-btn');
       const commentCountEl = postEl.querySelector('.comment-count');
+      const bigHeart = postEl.querySelector('.double-tap-heart');
 
       if (localStorage.getItem('liked_' + postId) === 'true') {
         likeBtn.classList.add('liked');
@@ -740,21 +807,32 @@
         }
       });
 
-      likeBtn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const isLiked = likeBtn.classList.toggle('liked');
-        localStorage.setItem('liked_' + postId, isLiked);
+      // Função unificada para curtir (usada pelo botão e pelo duplo clique)
+      async function setLikeState(forceLike = null) {
+        const currentlyLiked = likeBtn.classList.contains('liked');
+        const nextState = forceLike !== null ? forceLike : !currentlyLiked;
+
+        // Se já está curtido e deu duplo clique, não altera o contador no banco
+        if (currentlyLiked === nextState) return;
+
+        likeBtn.classList.toggle('liked', nextState);
+        localStorage.setItem('liked_' + postId, nextState);
 
         const currentNum = parseInt(likeCountEl.textContent, 10) || 0;
-        likeCountEl.textContent = Math.max(0, isLiked ? currentNum + 1 : currentNum - 1);
+        likeCountEl.textContent = Math.max(0, nextState ? currentNum + 1 : currentNum - 1);
 
         try {
           await setDoc(postRef, {
-            likes: increment(isLiked ? 1 : -1)
+            likes: increment(nextState ? 1 : -1)
           }, { merge: true });
         } catch (err) {
           alert("Erro ao curtir: " + err.message);
         }
+      }
+
+      likeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setLikeState();
       });
 
       commentBtn.addEventListener('click', (e) => {
@@ -762,6 +840,100 @@
         activePostId = postId;
         renderComments(postId);
         drawer.classList.add('open');
+      });
+
+      // INTERAÇÕES NA TELA DO POST: DUPLO TOQUE (CURTIR) + SEGURAR (MODO LIMPO)
+      let lastTapTime = 0;
+      let holdTimer = null;
+      let isHolding = false;
+      let startTouchX = 0;
+      let startTouchY = 0;
+
+      function triggerDoubleTapLike() {
+        if (bigHeart) {
+          bigHeart.classList.remove('animate');
+          void bigHeart.offsetWidth; // Reinicia a animação CSS
+          bigHeart.classList.add('animate');
+        }
+        setLikeState(true);
+      }
+
+      function enterCleanMode() {
+        isHolding = true;
+        postEl.classList.add('clean-view');
+      }
+
+      function exitCleanMode() {
+        clearTimeout(holdTimer);
+        if (isHolding) {
+          isHolding = false;
+          postEl.classList.remove('clean-view');
+        }
+      }
+
+      // Suporte para celular (Touch)
+      postEl.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        const touch = e.touches[0];
+        startTouchX = touch.clientX;
+        startTouchY = touch.clientY;
+
+        clearTimeout(holdTimer);
+        holdTimer = setTimeout(enterCleanMode, 220);
+      }, { passive: true });
+
+      postEl.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        const moveX = Math.abs(touch.clientX - startTouchX);
+        const moveY = Math.abs(touch.clientY - startTouchY);
+        // Cancela o modo segurar se o usuário estiver arrastando para cima/baixo ou para o lado
+        if (moveX > 10 || moveY > 10) {
+          clearTimeout(holdTimer);
+        }
+      }, { passive: true });
+
+      postEl.addEventListener('touchend', (e) => {
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        const wasHolding = isHolding;
+        exitCleanMode();
+
+        if (wasHolding) return;
+
+        const touch = e.changedTouches[0];
+        const moveX = Math.abs(touch.clientX - startTouchX);
+        const moveY = Math.abs(touch.clientY - startTouchY);
+
+        // Se foi um toque parado (não foi arraste)
+        if (moveX < 12 && moveY < 12) {
+          const now = Date.now();
+          if (now - lastTapTime < 300) {
+            triggerDoubleTapLike();
+            lastTapTime = 0;
+          } else {
+            lastTapTime = now;
+          }
+        }
+      });
+
+      postEl.addEventListener('touchcancel', exitCleanMode);
+
+      // Suporte também para computador (Mouse)
+      postEl.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        clearTimeout(holdTimer);
+        holdTimer = setTimeout(enterCleanMode, 220);
+      });
+
+      postEl.addEventListener('mouseup', (e) => {
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        exitCleanMode();
+      });
+
+      postEl.addEventListener('mouseleave', exitCleanMode);
+
+      postEl.addEventListener('dblclick', (e) => {
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer')) return;
+        triggerDoubleTapLike();
       });
     });
 
