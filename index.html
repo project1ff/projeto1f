@@ -43,7 +43,8 @@
       height: 100dvh;
       scroll-snap-align: start;
       scroll-snap-stop: always;
-      background: #0d0d0d;
+      background-color: #0d0d0d;
+      transition: background-color 0.35s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -80,6 +81,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background-color 0.35s ease;
     }
 
     .carousel-slide img {
@@ -137,7 +139,7 @@
       left: 0;
       width: 100%;
       height: 240px;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 20%, transparent);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 20%, transparent);
       pointer-events: none;
       z-index: 5;
     }
@@ -362,7 +364,7 @@
 
     <!-- POST 1 -->
     <div class="post" data-post-id="post_1">
-      <img class="post-img" src="sua-foto-capa.jpg" alt="Capa" />
+      <img class="post-img adaptive-bg" src="sua-foto-capa.jpg" alt="Capa" />
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
@@ -389,7 +391,7 @@
 
     <!-- POST 2 -->
     <div class="post" data-post-id="post_2">
-      <img class="post-img" src="sua-foto-1.jpg" alt="Post 1" />
+      <img class="post-img adaptive-bg" src="sua-foto-1.jpg" alt="Post 1" />
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
@@ -420,13 +422,13 @@
       
       <div class="carousel-track" id="carouselTrack">
         <div class="carousel-slide">
-          <img src="saude1.jfif" alt="Saúde 1" />
+          <img class="adaptive-bg" src="saude1.jfif" alt="Saúde 1" />
         </div>
         <div class="carousel-slide">
-          <img src="saude2.jfif" alt="Saúde 2" />
+          <img class="adaptive-bg" src="saude2.jfif" alt="Saúde 2" />
         </div>
         <div class="carousel-slide">
-          <img src="saude3.jfif" alt="Saúde 3" />
+          <img class="adaptive-bg" src="saude3.jfif" alt="Saúde 3" />
         </div>
       </div>
 
@@ -502,6 +504,54 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    // EXTRAÇÃO AUTOMÁTICA DA COR PREDOMINANTE DO FUNDO DA IMAGEM
+    function applyDominantColor(img) {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const w = (canvas.width = 40);
+        const h = (canvas.height = 40);
+        ctx.drawImage(img, 0, 0, w, h);
+
+        const data = ctx.getImageData(0, 0, w, h).data;
+        const colorBuckets = {};
+        let dominantHex = '#0d0d0d';
+        let maxCount = 0;
+
+        // Amostra principalmente as bordas superior e inferior da imagem (onde ela encosta no fundo)
+        for (let y = 0; y < h; y++) {
+          if (y > 6 && y < h - 6) continue;
+          for (let x = 0; x < w; x++) {
+            const idx = (y * w + x) * 4;
+            const r = Math.round(data[idx] / 12) * 12;
+            const g = Math.round(data[idx + 1] / 12) * 12;
+            const b = Math.round(data[idx + 2] / 12) * 12;
+            const key = `${Math.min(255, r)},${Math.min(255, g)},${Math.min(255, b)}`;
+            colorBuckets[key] = (colorBuckets[key] || 0) + 1;
+            if (colorBuckets[key] > maxCount) {
+              maxCount = colorBuckets[key];
+              dominantHex = `rgb(${key})`;
+            }
+          }
+        }
+
+        const container = img.closest('.carousel-slide') || img.closest('.post');
+        if (container) {
+          container.style.backgroundColor = dominantHex;
+        }
+      } catch (e) {
+        // Mantém o fundo padrão caso a imagem ainda não tenha carregado
+      }
+    }
+
+    document.querySelectorAll('img.adaptive-bg').forEach(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        applyDominantColor(img);
+      } else {
+        img.addEventListener('load', () => applyDominantColor(img));
+      }
+    });
 
     // Lógica das bolinhas e contador (1/3) do Carrossel
     const carouselTrack = document.getElementById('carouselTrack');
