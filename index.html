@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Reels - Saúde Mental nas Redes Sociais</title>
+  <title>Reels - Projeto 1 °F</title>
   <style>
     * {
       box-sizing: border-box;
@@ -136,12 +136,22 @@
       margin-bottom: 8px;
     }
 
-    .avatar {
-      width: 36px;
-      height: 36px;
+    /* Avatar personalizado 1°F */
+    .avatar-1f {
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       border: 2px solid #fff;
-      object-fit: cover;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .username {
@@ -283,8 +293,8 @@
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
-          <img class="avatar" src="sua-foto-capa.jpg" alt="Perfil" />
-          <span class="username">@saude_mental_digital</span>
+          <div class="avatar-1f">1°F</div>
+          <span class="username">Projeto 1 °F</span>
         </div>
         <div class="caption">O peso da vida digital. Arraste para baixo para ver o impacto! 👇</div>
       </div>
@@ -310,8 +320,8 @@
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
-          <img class="avatar" src="sua-foto-capa.jpg" alt="Perfil" />
-          <span class="username">@saude_mental_digital</span>
+          <div class="avatar-1f">1°F</div>
+          <span class="username">Projeto 1 °F</span>
         </div>
         <div class="caption">O mito da perfeição: não se compare com os destaques dos outros.</div>
       </div>
@@ -337,8 +347,8 @@
       <div class="gradient-bottom"></div>
       <div class="info">
         <div class="profile">
-          <img class="avatar" src="sua-foto-capa.jpg" alt="Perfil" />
-          <span class="username">@saude_mental_digital</span>
+          <div class="avatar-1f">1°F</div>
+          <span class="username">Projeto 1 °F</span>
         </div>
         <div class="caption">Tome o controle do seu feed! Siga conteúdos que te inspiram.</div>
       </div>
@@ -401,7 +411,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Paleta de cores e ícones SVG embutidos (100% offline-safe)
     const avatarColors = [
       'linear-gradient(135deg, #FF6B6B, #EE5253)',
       'linear-gradient(135deg, #48DBFB, #0ABDE3)',
@@ -413,17 +422,12 @@
     ];
 
     const avatarIcons = [
-      // Perfil clássico
       `<svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`,
-      // Rosto sorridente
       `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm-7 0c.83 0 1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm3.5 9.5c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>`,
-      // Estrela
       `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`,
-      // Raio / Energia
       `<svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>`
     ];
 
-    // Gera ou recupera uma identidade de visitante para este aparelho
     function getVisitorIdentity() {
       let saved = localStorage.getItem('visitor_identity');
       if (saved) {
@@ -461,7 +465,6 @@
         const text = typeof item === 'string' ? item : (item?.text || '');
         if (!text) return;
 
-        // Usa o visitante salvo no comentário ou gera um visual consistente para comentários antigos
         const user = item?.user || `@visitante_${100 + index}`;
         const color = avatarColors[item?.colorIdx ?? (index % avatarColors.length)];
         const icon = avatarIcons[item?.iconIdx ?? (index % avatarIcons.length)];
