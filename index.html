@@ -416,7 +416,7 @@
       </div>
     </div>
 
-    <!-- POST 3 (CARROSSEL: saude1.jfif, saude2.jfif, saude3.jfif) -->
+    <!-- POST 3 (CARROSSEL) -->
     <div class="post" data-post-id="post_3">
       <div class="carousel-badge" id="carouselCounter">1/3</div>
       
@@ -505,7 +505,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // EXTRAÇÃO AUTOMÁTICA DA COR PREDOMINANTE DO FUNDO DA IMAGEM
+    // COR DE FUNDO ADAPTÁVEL
     function applyDominantColor(img) {
       try {
         const canvas = document.createElement('canvas');
@@ -519,7 +519,6 @@
         let dominantHex = '#0d0d0d';
         let maxCount = 0;
 
-        // Amostra principalmente as bordas superior e inferior da imagem (onde ela encosta no fundo)
         for (let y = 0; y < h; y++) {
           if (y > 6 && y < h - 6) continue;
           for (let x = 0; x < w; x++) {
@@ -540,29 +539,66 @@
         if (container) {
           container.style.backgroundColor = dominantHex;
         }
-      } catch (e) {
-        // Mantém o fundo padrão caso a imagem ainda não tenha carregado
-      }
+      } catch (e) {}
     }
 
     document.querySelectorAll('img.adaptive-bg').forEach(img => {
-      if (img.complete && img.naturalWidth > 0) {
-        applyDominantColor(img);
-      } else {
-        img.addEventListener('load', () => applyDominantColor(img));
-      }
+      if (img.complete && img.naturalWidth > 0) applyDominantColor(img);
+      else img.addEventListener('load', () => applyDominantColor(img));
     });
 
-    // Lógica das bolinhas e contador (1/3) do Carrossel
+    // LÓGICA DO CARROSSEL (BOLINHAS E FREIO DE INÉRCIA)
     const carouselTrack = document.getElementById('carouselTrack');
     const carouselDots = document.querySelectorAll('#carouselDots .dot');
     const carouselCounter = document.getElementById('carouselCounter');
 
     if (carouselTrack) {
+      let currentIdx = 0;
+      let startX = 0;
+
+      // Grava onde o dedo tocou
+      carouselTrack.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+
+      // Quando solta o dedo, analisa a força do arraste e trava em 1 slide apenas
+      carouselTrack.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+        const slideWidth = carouselTrack.clientWidth;
+
+        // Se o usuário arrastou mais de 40px (foi intencional)
+        if (Math.abs(diff) > 40) {
+          // Desabilita o scroll nativo momentaneamente para "matar" a inércia do navegador
+          carouselTrack.style.overflowX = 'hidden'; 
+
+          if (diff > 0 && currentIdx < 2) {
+            currentIdx++; // Vai para o próximo slide
+          } else if (diff < 0 && currentIdx > 0) {
+            currentIdx--; // Volta um slide
+          }
+
+          // Rola suavemente usando JavaScript exato para a foto certa
+          carouselTrack.scrollTo({
+            left: currentIdx * slideWidth,
+            behavior: 'smooth'
+          });
+
+          // Devolve o controle pro dedo após a rolagem terminar
+          setTimeout(() => {
+            carouselTrack.style.overflowX = 'scroll';
+          }, 350);
+        }
+      });
+
+      // Atualização dos marcadores
       carouselTrack.addEventListener('scroll', () => {
         const slideWidth = carouselTrack.clientWidth;
         if (slideWidth === 0) return;
         const activeIndex = Math.round(carouselTrack.scrollLeft / slideWidth);
+        
+        currentIdx = activeIndex; // Mantém a sincronia
+
         carouselDots.forEach((dot, idx) => {
           dot.classList.toggle('active', idx === activeIndex);
         });
@@ -572,6 +608,7 @@
       });
     }
 
+    // (RESTANTE DA LÓGICA DE COMENTÁRIOS E PERFIL VEM ABAIXO...)
     const avatarColors = [
       'linear-gradient(135deg, #FF6B6B, #EE5253)',
       'linear-gradient(135deg, #48DBFB, #0ABDE3)',
