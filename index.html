@@ -683,7 +683,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
-      getFirestore, doc, setDoc, increment, onSnapshot 
+      getFirestore, doc, setDoc, increment, onSnapshot, arrayUnion 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1069,6 +1069,41 @@
     });
     document.getElementById('drawerBg').addEventListener('click', () => {
       drawer.classList.remove('open');
+    });
+
+    // ENVIAR COMENTÁRIO AO CLICAR NOS BOTÕES (CHIPS)
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', async (e) => {
+        if (!activePostId) return;
+        
+        const msg = e.target.getAttribute('data-msg');
+        const identity = getVisitorIdentity();
+        const postRef = doc(db, "reels_posts", activePostId);
+
+        const newComment = {
+          text: msg,
+          user: identity.user,
+          colorIdx: identity.colorIdx,
+          iconIdx: identity.iconIdx,
+          timestamp: Date.now()
+        };
+
+        try {
+          await setDoc(postRef, {
+            comments: arrayUnion(newComment)
+          }, { merge: true });
+          
+          e.target.style.background = "#ff2a54";
+          e.target.style.borderColor = "#ff2a54";
+          setTimeout(() => {
+            e.target.style.background = "#2e2e2e";
+            e.target.style.borderColor = "#444";
+          }, 300);
+
+        } catch (error) {
+          console.error("Erro ao enviar comentário:", error);
+        }
+      });
     });
 
   </script>
