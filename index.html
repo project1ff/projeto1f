@@ -52,6 +52,7 @@
       overflow: hidden;
     }
 
+    /* Estilo que serve tanto para imagens quanto para os vídeos */
     .post-img {
       width: 100%;
       height: 100%;
@@ -499,9 +500,10 @@
       </div>
     </div>
 
-    <!-- POST 2: GIF DERRETIMENTO MENTAL (Sem o Timer) -->
+    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Substituído pelo MP4) -->
     <div class="post standard-post" data-post-id="post_derretimento" id="post_derretimento">
-      <img class="post-img adaptive-bg" src="gifgif.gif" alt="Gif Derretimento Mental" />
+      <!-- TAG DO VÍDEO AQUI! Certifique-se de que o nome do arquivo seja "gta-derretimento.mp4" -->
+      <video class="post-img" src="gta-derretimento.mp4" autoplay loop muted playsinline></video>
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="gradient-bottom"></div>
       <div class="info">
@@ -509,7 +511,7 @@
           <div class="avatar-1f">1°F</div>
           <span class="username">Projeto 1 °F</span>
         </div>
-        <div class="caption">O quão rápido sua mente derrete? Assista o gif e arraste para baixo para descobrir! ⏰🤯</div>
+        <div class="caption">O quão rápido sua mente derrete? Assista ao vídeo e arraste para baixo para descobrir! ⏰🤯</div>
       </div>
       <div class="sidebar">
         <div class="btn-wrapper">
@@ -894,7 +896,7 @@
 
     // ============================================
     // LÓGICA DO CRONÔMETRO DERRETIMENTO MENTAL
-    // (Agora o tempo corre se o post do GIF estiver na tela)
+    // (Agora o tempo corre se o post do Vídeo estiver na tela)
     // ============================================
     let isWatchingGif = false;
     let watchStartTime = 0;
@@ -908,7 +910,7 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // Entrou no post do GIF: Inicia/Retoma o tempo
+            // Entrou no post do vídeo: Inicia/Retoma o tempo
             if (!isWatchingGif) {
               isWatchingGif = true;
               watchStartTime = Date.now();
@@ -918,7 +920,7 @@
               }, 100);
             }
           } else {
-            // Saiu do post do GIF (ex: rolou para o timer): Pausa o tempo
+            // Saiu do post do vídeo (ex: rolou para o timer): Pausa o tempo
             if (isWatchingGif) {
               isWatchingGif = false;
               totalWatchedTime += (Date.now() - watchStartTime) / 1000;
@@ -927,7 +929,7 @@
             }
           }
         });
-      }, { threshold: 0.6 }); // Quando 60% do GIF estiver visível
+      }, { threshold: 0.6 }); // Quando 60% do vídeo estiver visível
       
       observer.observe(derretimentoPost);
     }
