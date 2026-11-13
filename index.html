@@ -62,6 +62,35 @@
       pointer-events: none;
     }
 
+    /* BOTÃO DE MUTE / DESMUTE NO VÍDEO */
+    .mute-btn {
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+    .mute-btn:active {
+      transform: scale(0.9);
+    }
+    .mute-btn svg {
+      width: 22px;
+      height: 22px;
+      pointer-events: none;
+      filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.6));
+    }
+
     /* ESTILOS DOS CARROSSÉIS HORIZONTAIS */
     .carousel-track {
       display: flex;
@@ -160,7 +189,8 @@
     .info,
     .carousel-dots,
     .carousel-badge,
-    .nav-btn {
+    .nav-btn,
+    .mute-btn {
       transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
@@ -169,7 +199,8 @@
     .post.clean-view .info,
     .post.clean-view .carousel-dots,
     .post.clean-view .carousel-badge,
-    .post.clean-view .nav-btn {
+    .post.clean-view .nav-btn,
+    .post.clean-view .mute-btn {
       opacity: 0 !important;
       pointer-events: none !important;
     }
@@ -500,11 +531,27 @@
       </div>
     </div>
 
-    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Aleatório e Dinâmico) -->
+    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Com botão de Mute/Desmute) -->
     <div class="post standard-post" data-post-id="post_derretimento" id="post_derretimento">
       <video id="video-aleatorio" class="post-img" autoplay loop muted playsinline>
         <source id="source-aleatorio" src="" type="video/mp4">
       </video>
+
+      <!-- BOTÃO DE SOM (MUTE/DESMUTE) -->
+      <button type="button" class="mute-btn" id="muteBtn" aria-label="Ativar ou desativar som">
+        <!-- Ícone inicial: Mutado -->
+        <svg id="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+        <!-- Ícone oculto: Com som -->
+        <svg id="icon-unmuted" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="gradient-bottom"></div>
       <div class="info">
@@ -836,7 +883,6 @@
         if (nextBtn) nextBtn.style.display = currentIdx === totalSlides - 1 ? 'none' : 'flex';
       }
 
-      // Eventos das setinhas
       if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -893,37 +939,54 @@
         updateUI();
       });
 
-      updateUI(); // Chama no início para esconder seta da esquerda
+      updateUI();
     });
 
     // ============================================
-    // LÓGICA DO VÍDEO ALEATÓRIO E DO CRONÔMETRO
+    // LÓGICA DOS VÍDEOS, BOTÃO DE SOM E CRONÔMETRO
     // ============================================
     const listaDeVideos = [
-        "gta-derretimento.mp4",  // <-- Adicionado o original de volta!
+        "gta-derretimento.mp4",
         "gta1-derretimento.mp4",
         "mine-derretimento.mp4",
         "sub-derretimento.mp4"
     ];
+    let indiceAtual = 0;
+
     const videoElement = document.getElementById("video-aleatorio");
     const sourceElement = document.getElementById("source-aleatorio");
+    const muteBtn = document.getElementById("muteBtn");
+    const iconMuted = document.getElementById("icon-muted");
+    const iconUnmuted = document.getElementById("icon-unmuted");
 
-    function trocarVideoAleatorio() {
-        if (!videoElement || !sourceElement) return;
-        let videoAtual = sourceElement.getAttribute("src");
-        let indiceSorteado = Math.floor(Math.random() * listaDeVideos.length);
-        
-        // Garante que não repita o mesmo vídeo duas vezes seguidas
-        if (listaDeVideos[indiceSorteado] === videoAtual) {
-            indiceSorteado = (indiceSorteado + 1) % listaDeVideos.length;
-        }
-
-        sourceElement.src = listaDeVideos[indiceSorteado];
-        videoElement.load();
+    function updateMuteIcon() {
+      if (!videoElement || !iconMuted || !iconUnmuted) return;
+      if (videoElement.muted) {
+        iconMuted.style.display = "block";
+        iconUnmuted.style.display = "none";
+      } else {
+        iconMuted.style.display = "none";
+        iconUnmuted.style.display = "block";
+      }
     }
 
-    // Carrega um vídeo aleatório logo que o site abre
-    trocarVideoAleatorio();
+    if (muteBtn && videoElement) {
+      muteBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // Evita ativar o duplo clique ou modo limpo
+        videoElement.muted = !videoElement.muted;
+        updateMuteIcon();
+      });
+    }
+
+    function trocarVideoSequencial() {
+        if (!videoElement || !sourceElement) return;
+        sourceElement.src = listaDeVideos[indiceAtual];
+        videoElement.load();
+        indiceAtual = (indiceAtual + 1) % listaDeVideos.length;
+    }
+
+    // Carrega o primeiro vídeo logo que o site abre
+    trocarVideoSequencial();
 
     let isWatchingGif = false;
     let watchStartTime = 0;
@@ -937,7 +1000,6 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // ENTROU NO POST DO VÍDEO: Inicia/Retoma o tempo
             if (!isWatchingGif) {
               isWatchingGif = true;
               watchStartTime = Date.now();
@@ -946,22 +1008,24 @@
                 timerDisplay.innerText = (totalWatchedTime + currentSession).toFixed(1);
               }, 100);
             }
-            // Garante que o vídeo toque ao voltar para a tela
-            if(videoElement) videoElement.play();
-
+            if (videoElement) videoElement.play();
           } else {
-            // SAIU DO POST DO VÍDEO: Pausa o tempo
             if (isWatchingGif) {
               isWatchingGif = false;
               totalWatchedTime += (Date.now() - watchStartTime) / 1000;
               clearInterval(timerInterval);
               timerDisplay.innerText = totalWatchedTime.toFixed(1);
             }
-            // O TRUQUE MÁGICO: Sorteia um novo vídeo enquanto ele está fora da tela!
-            trocarVideoAleatorio();
+            // Muta o som ao sair do post para não vazar áudio nos outros slides
+            if (videoElement) {
+              videoElement.muted = true;
+              updateMuteIcon();
+            }
+            // Prepara o próximo vídeo da fila
+            trocarVideoSequencial();
           }
         });
-      }, { threshold: 0.6 }); // Quando 60% do post estiver visível
+      }, { threshold: 0.6 });
       
       observer.observe(derretimentoPost);
     }
@@ -1124,7 +1188,7 @@
       }
 
       postEl.addEventListener('touchstart', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn') || e.target.closest('.mute-btn')) return;
         const touch = e.touches[0];
         startTouchX = touch.clientX;
         startTouchY = touch.clientY;
@@ -1140,7 +1204,7 @@
       }, { passive: true });
 
       postEl.addEventListener('touchend', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn') || e.target.closest('.mute-btn')) return;
         const wasHolding = isHolding;
         exitCleanMode();
         if (wasHolding) return;
@@ -1160,18 +1224,18 @@
 
       postEl.addEventListener('touchcancel', exitCleanMode);
       postEl.addEventListener('mousedown', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn') || e.target.closest('.mute-btn')) return;
         clearTimeout(holdTimer);
         holdTimer = setTimeout(enterCleanMode, 220);
       });
       postEl.addEventListener('mouseup', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn') || e.target.closest('.mute-btn')) return;
         exitCleanMode();
       });
       postEl.addEventListener('mouseleave', exitCleanMode);
       
       postEl.addEventListener('dblclick', (e) => {
-        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.drawer') || e.target.closest('.nav-btn') || e.target.closest('.mute-btn')) return;
         triggerDoubleTapLike();
       });
     });
