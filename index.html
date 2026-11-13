@@ -94,12 +94,12 @@
       pointer-events: none;
     }
 
-    /* BOTÕES DE NAVEGAÇÃO DO CARROSSEL (SETAS) */
+    /* BOTÕES DE NAVEGAÇÃO DO CARROSSEL (SETAS) COM FUNDO REMOVIDO */
     .nav-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.5);
+      background: transparent;
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -108,13 +108,17 @@
       justify-content: center;
       cursor: pointer;
       z-index: 30;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(4px);
+      border: none;
       transition: opacity 0.2s, transform 0.1s;
       color: #fff;
     }
-    .nav-btn:active { transform: translateY(-50%) scale(0.9); background: rgba(0,0,0,0.8); }
-    .nav-btn svg { width: 24px; height: 24px; pointer-events: none; }
+    .nav-btn:active { transform: translateY(-50%) scale(0.9); background: transparent; }
+    .nav-btn svg { 
+      width: 24px; 
+      height: 24px; 
+      pointer-events: none; 
+      filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.6)); 
+    }
     .prev-btn { left: 10px; }
     .next-btn { right: 10px; }
 
@@ -266,8 +270,9 @@
       gap: 4px;
     }
 
+    /* BOTÕES DE LIKE E COMENTÁRIO COM FUNDO REMOVIDO */
     .btn-action {
-      background: rgba(0, 0, 0, 0.45);
+      background: transparent;
       border: none;
       border-radius: 50%;
       width: 50px;
@@ -277,7 +282,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      backdrop-filter: blur(4px);
     }
 
     .btn-action svg {
@@ -285,6 +289,7 @@
       height: 26px;
       pointer-events: none;
       transition: transform 0.15s ease;
+      filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.6));
     }
 
     .btn-action:active svg { transform: scale(1.25); }
