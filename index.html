@@ -472,7 +472,7 @@
 
   <div class="feed">
 
-    <!-- POST 1: CAPA (capa.jfif) -->
+    <!-- POST 1: CAPA -->
     <div class="post standard-post" data-post-id="post_1">
       <img class="post-img adaptive-bg" src="capa.jfif" alt="Capa" />
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -500,10 +500,11 @@
       </div>
     </div>
 
-    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Substituído pelo MP4) -->
+    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Aleatório) -->
     <div class="post standard-post" data-post-id="post_derretimento" id="post_derretimento">
-      <!-- TAG DO VÍDEO AQUI! Certifique-se de que o nome do arquivo seja "gta-derretimento.mp4" -->
-      <video class="post-img" src="gta-derretimento.mp4" autoplay loop muted playsinline></video>
+      <video id="video-aleatorio" class="post-img" autoplay loop muted playsinline>
+        <source id="source-aleatorio" src="" type="video/mp4">
+      </video>
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="gradient-bottom"></div>
       <div class="info">
@@ -645,7 +646,7 @@
       </div>
     </div>
 
-    <!-- POST 6: CARROSSEL MUNDO (mundo1.jfif e mundo2.jfif) COM SETAS -->
+    <!-- POST 6: CARROSSEL MUNDO -->
     <div class="post carousel-post" data-post-id="post_mundo">
       <div class="carousel-badge">1/2</div>
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -696,7 +697,7 @@
       </div>
     </div>
 
-    <!-- POST 7: FINAL (final.jfif) -->
+    <!-- POST 7: FINAL -->
     <div class="post standard-post" data-post-id="post_final">
       <img class="post-img adaptive-bg" src="final.jfif" alt="Fim" />
       <svg class="double-tap-heart" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -748,6 +749,25 @@
     </div>
   </div>
 
+  <!-- SCRIPT QUE SORTEIA OS VÍDEOS DE FUNDO -->
+  <script>
+    const listaDeVideos = [
+        "gta1-derretimento.mp4",
+        "mine-derretimento.mp4",
+        "sub-derretimento.mp4"
+    ];
+
+    const indiceSorteado = Math.floor(Math.random() * listaDeVideos.length);
+    const videoElement = document.getElementById("video-aleatorio");
+    const sourceElement = document.getElementById("source-aleatorio");
+
+    if(videoElement && sourceElement) {
+        sourceElement.src = listaDeVideos[indiceSorteado];
+        videoElement.load();
+    }
+  </script>
+
+  <!-- FIREBASE E LÓGICAS DO SITE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
@@ -1186,7 +1206,6 @@
         }
       });
     });
-
   </script>
 </body>
 </html>
