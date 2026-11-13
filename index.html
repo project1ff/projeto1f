@@ -500,7 +500,7 @@
       </div>
     </div>
 
-    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Aleatório) -->
+    <!-- POST 2: VÍDEO DERRETIMENTO MENTAL (Aleatório e Dinâmico) -->
     <div class="post standard-post" data-post-id="post_derretimento" id="post_derretimento">
       <video id="video-aleatorio" class="post-img" autoplay loop muted playsinline>
         <source id="source-aleatorio" src="" type="video/mp4">
@@ -749,25 +749,7 @@
     </div>
   </div>
 
-  <!-- SCRIPT QUE SORTEIA OS VÍDEOS DE FUNDO -->
-  <script>
-    const listaDeVideos = [
-        "gta1-derretimento.mp4",
-        "mine-derretimento.mp4",
-        "sub-derretimento.mp4"
-    ];
-
-    const indiceSorteado = Math.floor(Math.random() * listaDeVideos.length);
-    const videoElement = document.getElementById("video-aleatorio");
-    const sourceElement = document.getElementById("source-aleatorio");
-
-    if(videoElement && sourceElement) {
-        sourceElement.src = listaDeVideos[indiceSorteado];
-        videoElement.load();
-    }
-  </script>
-
-  <!-- FIREBASE E LÓGICAS DO SITE -->
+  <!-- SCRIPT PRINCIPAL DO FIREBASE E LÓGICAS DO SITE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
@@ -915,9 +897,33 @@
     });
 
     // ============================================
-    // LÓGICA DO CRONÔMETRO DERRETIMENTO MENTAL
-    // (Agora o tempo corre se o post do Vídeo estiver na tela)
+    // LÓGICA DO VÍDEO ALEATÓRIO E DO CRONÔMETRO
     // ============================================
+    const listaDeVideos = [
+        "gta1-derretimento.mp4",
+        "mine-derretimento.mp4",
+        "sub-derretimento.mp4"
+    ];
+    const videoElement = document.getElementById("video-aleatorio");
+    const sourceElement = document.getElementById("source-aleatorio");
+
+    function trocarVideoAleatorio() {
+        if (!videoElement || !sourceElement) return;
+        let videoAtual = sourceElement.getAttribute("src");
+        let indiceSorteado = Math.floor(Math.random() * listaDeVideos.length);
+        
+        // Garante que não repita o mesmo vídeo duas vezes seguidas
+        if (listaDeVideos[indiceSorteado] === videoAtual) {
+            indiceSorteado = (indiceSorteado + 1) % listaDeVideos.length;
+        }
+
+        sourceElement.src = listaDeVideos[indiceSorteado];
+        videoElement.load();
+    }
+
+    // Carrega um vídeo aleatório logo que o site abre
+    trocarVideoAleatorio();
+
     let isWatchingGif = false;
     let watchStartTime = 0;
     let totalWatchedTime = 0;
@@ -930,7 +936,7 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // Entrou no post do vídeo: Inicia/Retoma o tempo
+            // ENTROU NO POST DO VÍDEO: Inicia/Retoma o tempo
             if (!isWatchingGif) {
               isWatchingGif = true;
               watchStartTime = Date.now();
@@ -939,17 +945,22 @@
                 timerDisplay.innerText = (totalWatchedTime + currentSession).toFixed(1);
               }, 100);
             }
+            // Garante que o vídeo toque ao voltar para a tela
+            if(videoElement) videoElement.play();
+
           } else {
-            // Saiu do post do vídeo (ex: rolou para o timer): Pausa o tempo
+            // SAIU DO POST DO VÍDEO: Pausa o tempo
             if (isWatchingGif) {
               isWatchingGif = false;
               totalWatchedTime += (Date.now() - watchStartTime) / 1000;
               clearInterval(timerInterval);
               timerDisplay.innerText = totalWatchedTime.toFixed(1);
             }
+            // O TRUQUE MÁGICO: Sorteia um novo vídeo enquanto ele está fora da tela!
+            trocarVideoAleatorio();
           }
         });
-      }, { threshold: 0.6 }); // Quando 60% do vídeo estiver visível
+      }, { threshold: 0.6 }); // Quando 60% do post estiver visível
       
       observer.observe(derretimentoPost);
     }
